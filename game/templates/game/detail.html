@@ -1,6 +1,16 @@
-<h1>Matches de {{ object.nom }} {{match.list}}:</h1>
+<h1>Equipe : {{ object.nom }}</h1>
+<b>Score : {{ object.score }}</b>
+
+<h1>Matches :</h1>
 <ul>
 {% for match in match_list %}
-    <li>{{ match.nom }}</li> {{match.locaux }} // {{match.visiteur}} : {{match.score }} {{match.ligue }}
+    <li>{{ match.nom }}</li> {{match.locaux }} // {{match.visiteur}} : {{match.score_locaux }}-{{match.score_visiteurs }} {{match.ligue }}
 {% endfor %}
+</ul>
+
+<h1>Ligues :</h1>
+<ul>
+    {% for ligue in league_list %}
+        <li>{{ ligue.nom }}</li> 
+    {% endfor %}
 </ul>

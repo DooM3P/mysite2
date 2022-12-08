@@ -2,7 +2,7 @@
 {% if latest_equipe_list %}
     <ul>
     {% for equipe in latest_equipe_list %}
-        <li><a href="{% url 'game:detail' equipe.id %}">{{ equipe.nom }}</a></li>
+        <li><a href="{% url 'game:detail' equipe.id %}">{{ equipe.nom }}</a> Score : {{equipe.score}}</li>
     {% endfor %}
     </ul>
 {% else %}

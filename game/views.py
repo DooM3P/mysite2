@@ -19,6 +19,9 @@ class EquipeView(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["match_list"] = Match.objects.filter(locaux__id__exact=context['object'].id)|Match.objects.filter(visiteur__id__exact=context['object'].id)
+        context["league_list"] = set()
+        for match in context["match_list"]:
+            context["league_list"].add(match.ligue)
         return context
 
 class ResultsView(generic.DetailView):
