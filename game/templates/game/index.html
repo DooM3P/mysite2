@@ -1,0 +1,9 @@
+{% if latest_equipe_list %}
+    <ul>
+    {% for equipe in latest_equipe_list %}
+        <li><a href="/game/{{ game.id }}/">{{ equipe.nom }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}

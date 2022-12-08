@@ -1,0 +1,8 @@
+<!-- {{ equipe }} -->
+
+<h1>{{ equipe.nom }}</h1>
+<ul>
+{% for match in match_list %}
+    <li>{{ match.nom }}</li>
+{% endfor %}
+</ul>
