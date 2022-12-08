@@ -1,8 +1,6 @@
-<!-- {{ equipe }} -->
-
-<h1>{{ equipe.nom }}</h1>
+<h1>Matches de {{ object.nom }} {{match.list}}:</h1>
 <ul>
 {% for match in match_list %}
-    <li>{{ match.nom }}</li>
+    <li>{{ match.nom }}</li> {{match.locaux }} // {{match.visiteur}} : {{match.score }} {{match.ligue }}
 {% endfor %}
 </ul>
