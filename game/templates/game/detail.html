@@ -3,14 +3,14 @@
 
 <h1>Matches :</h1>
 <ul>
-{% for match in match_list %}
+{% for match in object.matches %}
     <li>{{ match.nom }}</li> {{match.locaux }} // {{match.visiteur}} : {{match.score_locaux }}-{{match.score_visiteurs }} {{match.ligue }}
 {% endfor %}
 </ul>
 
 <h1>Ligues :</h1>
 <ul>
-    {% for ligue in league_list %}
+    {% for ligue in object.ligues %}
         <li>{{ ligue.nom }}</li> 
     {% endfor %}
 </ul>

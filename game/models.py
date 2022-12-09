@@ -4,31 +4,43 @@ import datetime
 
 class Equipe(models.Model):
     nom = models.CharField(max_length=70)
+    
     def __str__(self):
         return self.nom
+    
     @property
     def score(self):
         match =  Match.objects.filter(locaux__id__exact=self.id)|Match.objects.filter(visiteur__id__exact=self.id)
         score = 0
         for matches in match:
-            print(matches.locaux)
             if matches.locaux.id==self.id:
-                if matches.score_locaux > matches.score_visiteurs:score+=2
-                elif matches.score_locaux < matches.score_visiteurs:score-=2
+                if matches.score_locaux > matches.score_visiteurs:score+=3
+                elif matches.score_locaux < matches.score_visiteurs:score-=0
                 elif matches.score_locaux == matches.score_visiteurs:score+=1
                 else: print("SYSTEM ERROR")
             elif matches.visiteur.id==self.id:
-                if matches.score_locaux < matches.score_visiteurs:score+=2
-                elif matches.score_locaux > matches.score_visiteurs:score-=2
+                if matches.score_locaux < matches.score_visiteurs:score+=3
+                elif matches.score_locaux > matches.score_visiteurs:score-=0
                 elif matches.score_locaux == matches.score_visiteurs:score+=1
                 else: print("SYSTEM ERROR")
             else: print("SYSTEM ERROR")
         return score
+    @property
+    def matches(self):
+        return Match.objects.filter(locaux__id__exact=self.id)|Match.objects.filter(visiteur__id__exact=self.id)
+
+    @property
+    def ligues(self):
+        ligues = set()
+        for match in self.matches:
+            ligues.add(match.ligue)
+        return ligues        
 
 
 
 class Ligue(models.Model):
     nom = models.CharField(max_length=70,default="")
+    
     def __str__(self):
         return self.nom
 
@@ -40,5 +52,6 @@ class Match(models.Model):
     ligue = models.ForeignKey(Ligue, on_delete=models.CASCADE, default="")
     score_locaux = models.IntegerField(default=0)
     score_visiteurs = models.IntegerField(default=0)
+    
     def __str__(self):
         return self.nom

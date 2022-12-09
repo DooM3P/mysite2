@@ -1,10 +1,19 @@
 <h1>Equipes :</h1>
 {% if latest_equipe_list %}
-    <ul>
+    <table>
+        <tr>
+            <th>Classement</th>
+            <th>Nom</th>
+            <th>Score</th>
+        </tr>
     {% for equipe in latest_equipe_list %}
-        <li><a href="{% url 'game:detail' equipe.id %}">{{ equipe.nom }}</a> Score : {{equipe.score}}</li>
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td><a href="{% url 'game:detail' equipe.id %}">{{ equipe.nom }}</a></td>
+            <td>{{equipe.score}}</td>
+        </tr>
     {% endfor %}
-    </ul>
+    </table>
 {% else %}
     <p>No equipe are available.</p>
 {% endif %}
