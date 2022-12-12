@@ -14,7 +14,7 @@ body:before {
     left: 0;
     top: 0;
     z-index: -1;
-    background-color: rgba(226, 255, 219, 0.85);
+    background-color: rgba(226, 255, 219, 0.938);
 }
 .titre {
     text-align: center;

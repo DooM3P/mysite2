@@ -30,9 +30,7 @@
                     {% endfor %}
                 </tbody>
             </table>
-        </div class="container">
         <h1 class="titre"> Matches de cette ligue </h1>
-        <div class="container">
             <table class="table table-striped border border-3 border-secondary">
                 <thead>
                     <tr class="table-primary">
@@ -53,6 +51,11 @@
                     {% endfor %}
                 </tbody>
             </table>
+            <a target="_blank" 
+            class="btn btn-primary btn-lg btn-block" 
+            href="{% url 'game:CreateMatches' ligue.id %}"target="_self">
+            Genérer les matchs
+            </a>
         </div class="container">        
         {% else %}
             <p>No equipe are available.</p>

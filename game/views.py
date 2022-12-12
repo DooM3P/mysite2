@@ -49,19 +49,24 @@ def AddMatch(request#, pk
         # Check if the form is valid:
         if form.is_valid():
             # process the data in form.cleaned_data as required (here we just write it to the model due_back field)
-            match = Match(nom="Match de Test",
-                date=form.cleaned_data['datematch'],
-                locaux=Equipe.objects.get(id=1), visiteur=Equipe.objects.get(id=2),ligue=Ligue(id=1), score_locaux=3, score_visiteurs=7
+            match = Match(nom=form.clean_nom_match(),
+                date=form.clean_datematch(),
+                locaux=Equipe.objects.get(id=1), visiteur=Equipe.objects.get(id=2),
+                ligue=Ligue(id=1), score_locaux=3, score_visiteurs=7
             ) 
             match.save()
 
             # redirect to a new URL:
-            return HttpResponseRedirect(reverse('index'))
+            return HttpResponseRedirect(reverse('game:ligues'))
 
     # If this is a GET (or any other method) create the default form.
     else:
-        proposed_datematch = datetime.date.today() + datetime.timedelta(weeks=3)
-        form = AddMatchForm(initial={'datematch': proposed_datematch})
+        proposed_datematch = datetime.date.today() 
+        form = AddMatchForm(initial={'datematch': proposed_datematch,
+            'score_locaux': 0,
+            'score_visiteurs':0
+        }
+        )
 
     context = {
         'form': form,
@@ -69,3 +74,7 @@ def AddMatch(request#, pk
     }
 
     return render(request, 'game/add_match.html', context)
+
+def CreateMatches(request, ligue_id):
+    Match(nom="Match_testt", locaux=Equipe.objects.get(id=1), visiteur=Equipe.objects.get(id=2), ligue=Ligue(id=ligue_id), score_locaux=3, score_visiteurs=7).save() 
+    return HttpResponseRedirect(reverse('game:class_equipes',kwargs={'ligue_id': ligue_id}))
