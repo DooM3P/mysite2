@@ -20,7 +20,7 @@
 
         <h1>Ligues :</h1>
         <ul>
-            {% for ligue in object.ligues %}
+            {% for ligue in object.ligues.all %}
                 <li>{{ ligue.nom }}</li> 
             {% endfor %}
         </ul>

@@ -8,23 +8,29 @@ import datetime
 
 from .models import Match, Ligue, Equipe
 
-class IndexView(generic.ListView):
-    template_name = 'game/index.html'
+class EquipesView(generic.ListView):
+    template_name = 'game/class_equipes.html'
     context_object_name = 'equipe_list'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['ligue'] = Ligue.objects.get(id=self.kwargs['ligue_id'])
+        context['matches'] = sorted(Match.objects.filter(ligue=self.kwargs['ligue_id']), key = lambda p: p.nom,reverse=0)
+        return context
     def get_queryset(self):
         """Return the teams sorted by score."""
-        return sorted(Equipe.objects.all(), key = lambda p: p.score,reverse=1)
+        return sorted(Equipe.objects.filter(ligues=self.kwargs['ligue_id']), key = lambda p: p.score,reverse=1)
+    
 
 class EquipeView(generic.DetailView):
     model = Equipe
     template_name = 'game/detail.html'
 
 class LigueView(generic.ListView):
-    template_name = 'game/ligue.html'
+    template_name = 'game/index.html'
     context_object_name = 'ligue_list'
     def get_queryset(self):
         """Return the teams sorted by score."""
-        return sorted(Ligue.objects.all(), key = lambda p: p.nom,reverse=0)
+        return sorted(Ligue.objects.all(), key = lambda p: p.nom)
 
 class ResultsView(generic.DetailView):
     model = Match
@@ -44,7 +50,7 @@ def AddMatch(request#, pk
         if form.is_valid():
             # process the data in form.cleaned_data as required (here we just write it to the model due_back field)
             match = Match(nom="Match de Test",
-                date=form.cleaned_data['renewal_date'],
+                date=form.cleaned_data['datematch'],
                 locaux=Equipe.objects.get(id=1), visiteur=Equipe.objects.get(id=2),ligue=Ligue(id=1), score_locaux=3, score_visiteurs=7
             ) 
             match.save()
@@ -54,8 +60,8 @@ def AddMatch(request#, pk
 
     # If this is a GET (or any other method) create the default form.
     else:
-        proposed_renewal_date = datetime.date.today() + datetime.timedelta(weeks=3)
-        form = AddMatchForm(initial={'renewal_date': proposed_renewal_date})
+        proposed_datematch = datetime.date.today() + datetime.timedelta(weeks=3)
+        form = AddMatchForm(initial={'datematch': proposed_datematch})
 
     context = {
         'form': form,

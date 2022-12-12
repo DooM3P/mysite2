@@ -6,12 +6,15 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 class AddMatchForm(forms.Form):
-    renewal_date = forms.DateField(
+    datematch = forms.DateField(
         help_text="Enter a date between now and 4 weeks (default 3)."
         )
+    nom_match = forms.CharField(
+        help_text="Nom du Match"
+    )
 
-    def clean_renewal_date(self):
-        data = self.cleaned_data['renewal_date']
+    def clean_datematch(self):
+        data = self.cleaned_data['datematch']
 
         # Check if a date is not in the past.
         if data < datetime.date.today():
