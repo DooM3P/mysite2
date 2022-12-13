@@ -5,13 +5,14 @@ import datetime
 class Equipe(models.Model):
     nom = models.CharField(max_length=70)
     ligues = models.ManyToManyField('Ligue')
+    score2 = models.IntegerField(default=0)
         
-    @property
-    def score(self):
-        match =  Match.objects.filter(locaux__id__exact=self.id)|Match.objects.filter(visiteur__id__exact=self.id)
+    # @property
+    def score(self,ligue_id):
+        match =  Match.objects.filter(locaux__id__exact=self.id,ligue__id__exact=ligue_id)|Match.objects.filter(visiteur__id__exact=self.id,ligue__id__exact=ligue_id)
         score = 0
         for matches in match:
-            if (not matches.score_locaux ) or (not matches.score_visiteurs ):
+            if (not matches.score_locaux ) and (not matches.score_visiteurs ):
                 continue
             elif matches.locaux.id==self.id:
                 if matches.score_locaux > matches.score_visiteurs:score+=3

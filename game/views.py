@@ -11,19 +11,26 @@ from .models import Match, Ligue, Equipe
 class EquipesView(generic.ListView):
     template_name = 'game/class_equipes.html'
     context_object_name = 'equipe_list'
+
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['ligue'] = Ligue.objects.get(id=self.kwargs['ligue_id'])
         context['matches'] = sorted(Match.objects.filter(ligue=self.kwargs['ligue_id']), key = lambda p: p.nom,reverse=0)
         return context
+
     def get_queryset(self):
         """Return the teams sorted by score."""
-        return sorted(Equipe.objects.filter(ligues=self.kwargs['ligue_id']), key = lambda p: p.score,reverse=1)
+        for i in Equipe.objects.filter(ligues=self.kwargs['ligue_id']):
+            i.score2 = i.score(self.kwargs['ligue_id'])
+            i.save()
+        return sorted(Equipe.objects.filter(ligues=self.kwargs['ligue_id']),key = lambda p : p.score(self.kwargs['ligue_id']), reverse=1)
     
 
 class EquipeView(generic.DetailView):
     model = Equipe
     template_name = 'game/detail.html'
+
 
 class LigueView(generic.ListView):
     template_name = 'game/index.html'
@@ -31,10 +38,6 @@ class LigueView(generic.ListView):
     def get_queryset(self):
         """Return the teams sorted by score."""
         return sorted(Ligue.objects.all(), key = lambda p: p.nom)
-
-class ResultsView(generic.DetailView):
-    model = Match
-    template_name = 'game/results.html'
 
 def AddMatch(request#, pk
 ):
@@ -51,8 +54,9 @@ def AddMatch(request#, pk
             # process the data in form.cleaned_data as required (here we just write it to the model due_back field)
             match = Match(nom=form.clean_nom_match(),
                 date=form.clean_datematch(),
-                locaux=Equipe.objects.get(id=1), visiteur=Equipe.objects.get(id=2),
-                ligue=Ligue(id=1), score_locaux=3, score_visiteurs=7
+                locaux=form.clean_locaux(), visiteur=form.clean_visiteur(),
+                ligue=form.clean_ligue(), score_locaux=form.clean_score_locaux(),
+                score_visiteurs=form.clean_score_visiteurs()
             ) 
             match.save()
 

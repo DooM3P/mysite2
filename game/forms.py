@@ -11,7 +11,7 @@ class AddMatchForm(forms.Form):
         help_text="Nom du Match"
     )
     datematch = forms.DateField(
-        help_text="Enter a date between now and 4 weeks (default 3)."
+        help_text="Enter a date before now"
         )
     locaux = forms.ModelChoiceField(
         queryset=Equipe.objects.all()
@@ -31,20 +31,28 @@ class AddMatchForm(forms.Form):
 
         # Remember to always return the cleaned data.
         return data
-
-
+    def clean_locaux(self):
+        data = self.cleaned_data['locaux']
+        return data
+    def clean_visiteur(self):
+        data = self.cleaned_data['visiteur']
+        return data
+    def clean_ligue(self):
+        data = self.cleaned_data['ligue']
+        return data
+    def clean_score_locaux(self):
+        data = self.cleaned_data['score_locaux']
+        if not data : data = 0
+        return data
+    def clean_score_visiteurs(self):
+        data = self.cleaned_data['score_visiteurs']
+        if not data : data = 0
+        return data
     def clean_datematch(self):
         data = self.cleaned_data['datematch']
-
         # Check if a date is not in the past.
-        if data < datetime.date.today():
+        if data > datetime.date.today():
             raise ValidationError(_('Invalid date - renewal in past'))
-
-        # Check if a date is in the allowed range (+4 weeks from today).
-        if data > datetime.date.today() + datetime.timedelta(weeks=4):
-            raise ValidationError(_(
-                'Invalid date - renewal more than 4 weeks ahead'
-                ))
 
         # Remember to always return the cleaned data.
         return data
