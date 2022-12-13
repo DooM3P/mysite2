@@ -5,10 +5,10 @@ import datetime
 class Equipe(models.Model):
     nom = models.CharField(max_length=70)
     ligues = models.ManyToManyField('Ligue')
-    score2 = models.IntegerField(default=0)
+    score2 = models.IntegerField(default=0) #Score de l'équipe dans la dernière ligue affichée par l'utilisateur
         
-    # @property
-    def score(self,ligue_id):
+    # @property #Abandon de ce décorateur lors de la mise en place du paramètre ligue_id
+    def score(self,ligue_id): # Calcul du score PAR LIGUE
         match =  Match.objects.filter(locaux__id__exact=self.id,ligue__id__exact=ligue_id)|Match.objects.filter(visiteur__id__exact=self.id,ligue__id__exact=ligue_id)
         score = 0
         for matches in match:
@@ -54,8 +54,8 @@ class Ligue(models.Model):
 class Match(models.Model):
     nom = models.CharField(max_length=70,default="")
     date = models.DateTimeField('date du match',default=datetime.datetime(2022, 12, 8, 8, 11, 9, 493056, tzinfo=datetime.timezone.utc))
-    locaux= models.ForeignKey(Equipe, on_delete=models.CASCADE,default="",related_name="locaux") #ou Equipe si matchs entre equipes
-    visiteur =models.ForeignKey(Equipe, on_delete=models.CASCADE,default="",related_name="visiteur") #ou Equipe si matchs entre equipes
+    locaux= models.ForeignKey(Equipe, on_delete=models.CASCADE,default="",related_name="locaux") 
+    visiteur =models.ForeignKey(Equipe, on_delete=models.CASCADE,default="",related_name="visiteur") 
     ligue = models.ForeignKey(Ligue, on_delete=models.CASCADE, default="")
     score_locaux = models.IntegerField(null=True, blank=True)
     score_visiteurs = models.IntegerField(null=True, blank=True)

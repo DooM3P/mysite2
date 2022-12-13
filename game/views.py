@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, render #A privilegier
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
-from game.forms import AddMatchForm
+from game.forms import add_match_form, modify_matchForm
 import datetime
 
 
@@ -39,15 +39,13 @@ class LigueView(generic.ListView):
         """Return the teams sorted by score."""
         return sorted(Ligue.objects.all(), key = lambda p: p.nom)
 
-def AddMatch(request#, pk
-):
-    # book_instance = get_object_or_404(BookInstance, pk=pk)
-    match = Match(nom="Match de Test", locaux=Equipe.objects.get(id=1), visiteur=Equipe.objects.get(id=2),ligue=Ligue(nom = "Ligue Internationale"), score_locaux=3, score_visiteurs=7 )
+def add_match(request):
+    match = Match(nom="Match de Test", locaux=Equipe.objects.get(id=1), visiteur=Equipe.objects.get(id=2),ligue=Ligue(nom = "Ligue Internationale"),)
     # If this is a POST request then process the Form data
     if request.method == 'POST':
 
         # Create a form instance and populate it with data from the request (binding):
-        form = AddMatchForm(request.POST)
+        form = add_match_form(request.POST)
 
         # Check if the form is valid:
         if form.is_valid():
@@ -66,7 +64,7 @@ def AddMatch(request#, pk
     # If this is a GET (or any other method) create the default form.
     else:
         proposed_datematch = datetime.date.today() 
-        form = AddMatchForm(initial={'datematch': proposed_datematch,
+        form = add_match_form(initial={'datematch': proposed_datematch,
             'score_locaux': 0,
             'score_visiteurs':0
         }
@@ -79,7 +77,7 @@ def AddMatch(request#, pk
 
     return render(request, 'game/add_match.html', context)
 
-def CreateMatches(request, ligue_id):
+def create_matches(request, ligue_id):
     equipes = Equipe.objects.filter(ligues=ligue_id)
     for i in equipes:
         equipes = equipes.exclude(id=i.id)
@@ -89,3 +87,37 @@ def CreateMatches(request, ligue_id):
             if Match.objects.filter(locaux=j,visiteur=i,ligue=Ligue.objects.get(id=ligue_id)).count() == 0:
                 Match(nom="Test", locaux=j, visiteur=i, ligue=Ligue.objects.get(id=ligue_id)).save()
     return HttpResponseRedirect(reverse('game:class_equipes',kwargs={'ligue_id': ligue_id}))
+
+def modify_match(request, match_id):
+    match = Match.objects.get(id=match_id)
+    # If this is a POST request then process the Form data
+    if request.method == 'POST':
+
+        # Create a form instance and populate it with data from the request (binding):
+        form = modify_matchForm(request.POST)
+
+        # Check if the form is valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required (here we just write it to the model due_back field)
+            match.date=form.clean_datematch()
+            match.score_locaux=form.clean_score_locaux()
+            match.score_visiteurs=form.clean_score_visiteurs()
+            match.save()
+            # redirect to a new URL:
+            return HttpResponseRedirect(reverse('game:ligues'))
+
+    # If this is a GET (or any other method) create the default form.
+    else:
+        proposed_datematch = datetime.date.today() 
+        form = modify_matchForm(initial={'datematch': proposed_datematch,
+            'score_locaux': 0,
+            'score_visiteurs':0
+        }
+        )
+
+    context = {
+        'form': form,
+        'match': match,
+    }
+
+    return render(request, 'game/modify_match.html', context)

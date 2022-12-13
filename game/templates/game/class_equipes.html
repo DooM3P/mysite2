@@ -32,11 +32,13 @@
                     {% endfor %}
                 </tbody>
             </table>
-        <h1 class="titre"> Matches de cette ligue </h1>
+        <h1 class="titre"> Matchs sur cette ligue </h1> (cliquer sur un score manquant pour le compléter)
             <table class="table table-striped border border-3 border-secondary">
                 <thead>
                     <tr class="table-primary">
                         <th scope="col">Nom</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Ligue</th>
                         <th scope="col">Locaux</th>
                         <th scope="col">Visiteurs</th>
                         <th scope="col">Score</th>                   
@@ -44,19 +46,32 @@
                 </thead>
                 <tbody>
                     {% for match in matches %}
+                    {% if match.score_locaux == Null %}
+                    <tr class="table-light">
+                        <td>{{match.nom }}</td>
+                        <td>{{ match.date }}</td>
+                        <td>{{ match.ligue }}</td>
+                        <td>{{match.locaux }}</td>
+                        <td>{{match.visiteur}}</td>
+                        <td><a href="{% url 'game:Modify-Match' match.id %}">{{match.score_locaux}} -*- {{match.score_visiteurs}}</a></td>
+                    </tr>
+                    {% else %}
                     <tr class="table-light">
                         <td>{{ match.nom }}</td>
+                        <td>{{ match.date }}</td>
+                        <td>{{ match.ligue }}</td>
                         <td>{{match.locaux }}</td>
                         <td>{{match.visiteur}}</td>
                         <td>{{match.score_locaux}} - {{match.score_visiteurs}}</td>
                     </tr>
+                    {% endif %}
                     {% endfor %}
                 </tbody>
             </table>
             <a target="_blank" 
             class="btn btn-primary btn-lg btn-block" 
-            href="{% url 'game:CreateMatches' ligue.id %}"target="_self">
-            Genérer les matchs manquants
+            href="{% url 'game:create_matches' ligue.id %}">
+            Genérer les matchs manquants à la compétition
             </a>
         </div class="container">        
         {% else %}

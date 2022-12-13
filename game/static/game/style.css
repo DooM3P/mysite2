@@ -21,3 +21,9 @@ body:before {
     padding-bottom: 25px;
     padding-top: 25px;
 }
+
+.marge {
+    margin-top : 100px;
+    margin-bottom : 25px;
+}
+
