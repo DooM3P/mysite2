@@ -76,5 +76,12 @@ def AddMatch(request#, pk
     return render(request, 'game/add_match.html', context)
 
 def CreateMatches(request, ligue_id):
-    Match(nom="Match_testt", locaux=Equipe.objects.get(id=1), visiteur=Equipe.objects.get(id=2), ligue=Ligue(id=ligue_id), score_locaux=3, score_visiteurs=7).save() 
+    equipes = Equipe.objects.filter(ligues=ligue_id)
+    for i in equipes:
+        equipes = equipes.exclude(id=i.id)
+        for j in equipes:
+            if Match.objects.filter(locaux=i,visiteur=j,ligue=Ligue.objects.get(id=ligue_id)).count() == 0:
+                Match(nom="Test", locaux=i, visiteur=j, ligue=Ligue.objects.get(id=ligue_id)).save()
+            if Match.objects.filter(locaux=j,visiteur=i,ligue=Ligue.objects.get(id=ligue_id)).count() == 0:
+                Match(nom="Test", locaux=j, visiteur=i, ligue=Ligue.objects.get(id=ligue_id)).save()
     return HttpResponseRedirect(reverse('game:class_equipes',kwargs={'ligue_id': ligue_id}))

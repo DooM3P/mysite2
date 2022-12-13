@@ -11,7 +11,9 @@ class Equipe(models.Model):
         match =  Match.objects.filter(locaux__id__exact=self.id)|Match.objects.filter(visiteur__id__exact=self.id)
         score = 0
         for matches in match:
-            if matches.locaux.id==self.id:
+            if (not matches.score_locaux ) or (not matches.score_visiteurs ):
+                continue
+            elif matches.locaux.id==self.id:
                 if matches.score_locaux > matches.score_visiteurs:score+=3
                 elif matches.score_locaux < matches.score_visiteurs:score-=0
                 elif matches.score_locaux == matches.score_visiteurs:score+=1
@@ -27,13 +29,6 @@ class Equipe(models.Model):
     @property
     def matches(self):
         return Match.objects.filter(locaux__id__exact=self.id)|Match.objects.filter(visiteur__id__exact=self.id)
-
-    # @property
-    # def ligues(self):
-    #     ligues = set()
-    #     for match in self.matches:
-    #         ligues.add(match.ligue)
-    #     return ligues        
 
     def __str__(self):
         return self.nom
@@ -61,8 +56,8 @@ class Match(models.Model):
     locaux= models.ForeignKey(Equipe, on_delete=models.CASCADE,default="",related_name="locaux") #ou Equipe si matchs entre equipes
     visiteur =models.ForeignKey(Equipe, on_delete=models.CASCADE,default="",related_name="visiteur") #ou Equipe si matchs entre equipes
     ligue = models.ForeignKey(Ligue, on_delete=models.CASCADE, default="")
-    score_locaux = models.IntegerField(default=0)
-    score_visiteurs = models.IntegerField(default=0)
+    score_locaux = models.IntegerField(null=True, blank=True)
+    score_visiteurs = models.IntegerField(null=True, blank=True)
     
     def __str__(self):
         return self.nom
